@@ -71,7 +71,7 @@ podTemplate(
       stage('Build and Tag OpenShift Image') {
         echo "Building OpenShift container image tasks:${devTag}"
 
-        sh "oc start-build tasks --follow --from-file=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war -n -n ${GUID}-tasks-dev"
+        sh "oc start-build tasks --follow --from-file=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war -n ${GUID}-tasks-dev"
         // Tag the image using the devTag
         openshiftTag alias: 'false', destStream: 'tasks', destTag: devTag, destinationNamespace: "${GUID}-tasks-dev", namespace: "${GUID}-tasks-dev", srcStream: 'tasks', srcTag: 'latest', verbose: 'false'
       }
@@ -84,7 +84,7 @@ podTemplate(
         //      Set Image, Set VERSION
         //      Make sure the application is running and ready before proceeding
         // Update the Image on the Development Deployment Config
-        sh "oc set image dc/tasks tasks=docker-registry.default.svc:5000/${GUID}-tasks-dev/tasks:${devTag} -n 007-tasks-dev"
+        sh "oc set image dc/tasks tasks=docker-registry.default.svc:5000/${GUID}-tasks-dev/tasks:${devTag} -n ${GUID}-tasks-dev"
 
         // Update the Config Map which contains the users for the Tasks application
         sh "oc delete configmap tasks-config -n ${GUID}-tasks-dev --ignore-not-found=true"
@@ -102,7 +102,7 @@ podTemplate(
         echo "Copy image to Nexus container registry"
 
         // TBD: Copy image to Nexus container registry
-        sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:redhat docker://docker-registry.default.svc.cluster.local:5000/007-tasks-dev/tasks:${devTag} docker://nexus3.gpte-hw-cicd.svc.cluster.local:5000/tasks:${devTag}"
+        sh "skopeo copy --src-tls-verify=false --dest-tls-verify=false --src-creds openshift:\$(oc whoami -t) --dest-creds admin:redhat docker://docker-registry.default.svc.cluster.local:5000/${GUID}-tasks-dev/tasks:${devTag} docker://nexus3.gpte-hw-cicd.svc.cluster.local:5000/tasks:${devTag}"
         // TBD: Tag the built image with the production tag.
         openshiftTag alias: 'false', destStream: 'tasks', destTag: prodTag, destinationNamespace: "${GUID}-tasks-dev", namespace: "${GUID}-tasks-dev", srcStream: 'tasks', srcTag: devTag, verbose: 'false'
       }
