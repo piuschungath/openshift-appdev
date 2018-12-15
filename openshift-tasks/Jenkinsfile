@@ -58,7 +58,7 @@ podTemplate(
               // Using Maven to call SonarQube for Code Analysis
               'Code Analysis': { 
                   echo "Running Code Analysis"
-                  //sh "${mvnCmd} admin:redhat -Dsonar.host.url=http://sonarqube.gpte-hw-cicd.svc.cluster.local:9000/ -Dsonar.projectName=${JOB_BASE_NAME}-${devTag}"
+                  sh "${mvnCmd} clean verify sonar:sonar -Dsonar.host.url=http://sonarqube.gpte-hw-cicd.svc.cluster.local:9000/"
               }
         }
         
