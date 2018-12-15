@@ -37,7 +37,7 @@ items:
       type: "JenkinsPipeline"
       jenkinsPipelineStrategy:
         jenkinsfilePath: Jenkinsfile
-      env:
+        env:
           - name: "GUID"
             value: "${GUID}"
 kind: List
